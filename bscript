@@ -1,0 +1,62 @@
+import os.path as op
+import sys
+import subprocess
+
+if sys.version_info[0] < 3:
+    from ConfigParser \
+        import \
+            ConfigParser
+else:
+    from configparser \
+        import \
+	    ConfigParser
+
+from bento.commands import hooks
+
+from yaku.conftests.pytests \
+    import \
+        check_module
+
+def set_revision(template, output):
+    proc = subprocess.Popen('git rev-parse --short HEAD',
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE,
+                            shell=True)
+    repo_commit, _ = proc.communicate()
+    # We write the installation commit even if it's empty
+    cfg_parser = ConfigParser()
+    cfg_parser.read(template.abspath())
+    cfg_parser.set('commit hash', 'install_hash', repo_commit)
+
+    output.parent.mkdir()
+    out_file = open(output.abspath(), 'wt')
+    try:
+        cfg_parser.write(out_file)
+    finally:
+        out_file.close()
+
+@hooks.post_configure
+def post_configure(conf):
+    yconf = conf.yaku_context
+
+    #for module in ("sphinx", "pygments", "nose", "pexpect", "pyzmq", "readline"):
+    #    yconf.start_message("Checking for %r" % (module,))
+    #    try:
+    #        m = __import__(module)
+    #        if hasattr(m, "__version__"):
+    #            yconf.end_message("yes (version: %r)" % (m.__version__,))
+    #        else:
+    #            yconf.end_message("yes")
+    #    except ImportError:
+    #        yconf.end_message("no")
+
+@hooks.pre_build
+def pre_build(bld):
+    commit_template = bld.top_node.make_node(op.join("IPython", ".git_commit_info.ini.in"))
+    commit_output = commit_template.change_ext("")
+    set_revision(commit_template, commit_output)
+
+    # Tell bento to register a new category 'git_info' of installed artefactsd
+    bld.register_category("git_info")
+    # Register outputs in the 'git_info' category under the name 'git_commit_info'
+    bld.register_outputs("git_info", "git_commit_info", [commit_output])

@@ -1,0 +1,190 @@
+Name: ipython
+Version: 0.11.dev0
+Summary: An interactive computing environment for Python
+Url: http://ipython.org
+DownloadUrl: http://ipython.scipy.org/dist
+Description:     
+    The goal of IPython is to create a comprehensive environment for
+    interactive and exploratory computing.  To support this goal, IPython
+    has two main components:
+    
+    * An enhanced interactive Python shell.
+    
+    * An architecture for interactive parallel computing.
+    
+    The enhanced interactive Python shell has the following main features:
+    
+    * Comprehensive object introspection.
+    
+    * Input history, persistent across sessions.
+    
+    * Caching of output results during a session with automatically generated
+      references.
+    
+    * Readline based name completion.
+    
+    * Extensible system of 'magic' commands for controlling the environment and
+      performing many tasks related either to IPython or the operating system.
+    
+    * Configuration system with easy switching between different setups (simpler
+      than changing $PYTHONSTARTUP environment variables every time).
+    
+    * Session logging and reloading.
+    
+    * Extensible syntax processing for special purpose situations.
+    
+    * Access to the system shell with user-extensible alias system.
+    
+    * Easily embeddable in other Python programs and wxPython GUIs.
+    
+    * Integrated access to the pdb debugger and the Python profiler. 
+    
+    The parallel computing architecture has the following main features:
+    
+    * Quickly parallelize Python code from an interactive Python/IPython session.
+    
+    * A flexible and dynamic process model that be deployed on anything from 
+      multicore workstations to supercomputers.
+    
+    * An architecture that supports many different styles of parallelism, from
+      message passing to task farming.
+    
+    * Both blocking and fully asynchronous interfaces.
+    
+    * High level APIs that enable many things to be parallelized in a few lines
+      of code.
+    
+    * Share live parallel jobs with other users securely.  
+    
+    * Dynamically load balanced task farming system.
+    
+    * Robust error handling in parallel code.
+    
+    The latest development version is always available from IPython's `GitHub
+    site <http://github.com/ipython>`_.
+Author: The IPython Development Team
+AuthorEmail: ipython-dev@scipy.org
+Maintainer: The IPython Development Team
+MaintainerEmail: ipython-dev@scipy.org
+License: BSD
+Platforms: Linux,Mac OSX,Windows XP/2000/NT,Windows 95/98/ME
+Keywords: Interactive, Interpreter, Shell, Parrlal, Distributed
+
+MetaTemplateFile: IPython/core/release.py.in
+
+ExtraSourceFiles:
+    docs/*,
+    docs/emacs/**/*,
+    docs/source/**/*,
+    docs/sphinxext/**/*,
+    ipython.py,
+    IPython/.git_commit_info.ini.in,
+    IPython/testing/plugin/*,
+    IPython/scripts/*py,
+    IPython/scripts/iptest,
+    IPython/scripts/ipython,
+    IPython/scripts/irunner,
+    IPython/scripts/pycolor,
+    scripts/*.py,
+    setup.py,
+    setupbase.py,
+    setupegg.py,
+    setupext/*.py
+
+DataFiles: man
+    SourceDir: docs/man
+    TargetDir: $mandir/man1
+    Files: *.1
+
+DataFiles: examples
+    SourceDir: docs/examples
+    TargetDir: $docdir/examples
+    Files: core/*.desktop, core/*.leo, core/*py, core/*reg, vim/*,
+        lib/*.py, parallel/**/*.py, parallel/**/*.ipy
+
+DataFiles: user_profile
+    TargetDir: $sitedir
+    Files: IPython/config/profile/README, IPython/config/profile/**/*.py
+
+HookFile: bscript
+
+Library:
+    Packages:
+        IPython,
+        IPython.config,
+        IPython.config.profile,
+        IPython.config.tests,
+        IPython.core,
+        IPython.core.tests,
+        IPython.extensions,
+        IPython.external,
+        IPython.external.Itpl,
+        IPython.external.argparse,
+        IPython.external.decorator,
+        IPython.external.decorators,
+        IPython.external.guid,
+        IPython.external.mglob,
+        IPython.external.path,
+        IPython.external.pexpect,
+        IPython.external.pyparsing,
+        IPython.external.simplegeneric,
+        IPython.external.ssh,
+        IPython.frontend,
+        IPython.frontend.qt,
+        IPython.frontend.qt.console,
+        IPython.frontend.qt.console.tests,
+        IPython.frontend.terminal,
+        IPython.frontend.terminal.tests,
+        IPython.kernel,
+        IPython.lib,
+        IPython.lib.tests,
+        IPython.parallel,
+        IPython.parallel.apps,
+        IPython.parallel.client,
+        IPython.parallel.controller,
+        IPython.parallel.engine,
+        IPython.parallel.scripts,
+        IPython.parallel.tests,
+        IPython.quarantine,
+        IPython.quarantine.tests,
+        IPython.scripts,
+        IPython.testing,
+        IPython.testing.plugin,
+        IPython.testing.tests,
+        IPython.utils,
+        IPython.utils.tests,
+        IPython.zmq,
+        IPython.zmq.gui,
+        IPython.zmq.pylab
+
+Executable: ipcluster
+    Module: IPython.parallel.apps.ipclusterapp
+    Function: launch_new_instance
+
+Executable: ipcontroller
+    Module: IPython.parallel.apps.ipcontrollerapp
+    Function: launch_new_instance
+
+Executable: ipengine
+    Module: IPython.parallel.apps.ipengineapp
+    Function: launch_new_instance
+
+Executable: iplogger
+    Module: IPython.parallel.apps.iploggerapp
+    Function: launch_new_instance
+
+Executable: iptest
+    Module: IPython.testing.iptest
+    Function: main
+
+Executable: ipython
+    Module: IPython.frontend.terminal.ipapp
+    Function: launch_new_instance
+
+Executable: irunner
+    Module: IPython.lib.irunner
+    Function: main
+
+Executable: pycolor
+    Module: IPython.utils.PyColorize
+    Function: main

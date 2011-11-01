@@ -13,11 +13,7 @@ else:
 
 from bento.commands import hooks
 
-from yaku.conftests.pytests \
-    import \
-        check_module
-
-def set_revision(template, output):
+def set_revision(template):
     proc = subprocess.Popen('git rev-parse --short HEAD',
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE,
@@ -28,35 +24,29 @@ def set_revision(template, output):
     cfg_parser.read(template.abspath())
     cfg_parser.set('commit hash', 'install_hash', repo_commit)
 
+    output = template.change_ext("")
     output.parent.mkdir()
     out_file = open(output.abspath(), 'wt')
     try:
         cfg_parser.write(out_file)
     finally:
         out_file.close()
+    return output
 
-@hooks.post_configure
-def post_configure(conf):
-    yconf = conf.yaku_context
-
-    #for module in ("sphinx", "pygments", "nose", "pexpect", "pyzmq", "readline"):
-    #    yconf.start_message("Checking for %r" % (module,))
-    #    try:
-    #        m = __import__(module)
-    #        if hasattr(m, "__version__"):
-    #            yconf.end_message("yes (version: %r)" % (m.__version__,))
-    #        else:
-    #            yconf.end_message("yes")
-    #    except ImportError:
-    #        yconf.end_message("no")
+def make_git_commit_info(ctx):
+    commit_template = ctx.make_source_node(op.join("IPython", ".git_commit_info.ini.in"))
+    return set_revision(commit_template)
 
 @hooks.pre_build
 def pre_build(bld):
-    commit_template = bld.top_node.make_node(op.join("IPython", ".git_commit_info.ini.in"))
-    commit_output = commit_template.change_ext("")
-    set_revision(commit_template, commit_output)
+    commit_output = make_git_commit_info(bld)
 
     # Tell bento to register a new category 'git_info' of installed artefactsd
     bld.register_category("git_info")
     # Register outputs in the 'git_info' category under the name 'git_commit_info'
     bld.register_outputs("git_info", "git_commit_info", [commit_output])
+
+@hooks.pre_sdist
+def pre_sdist(ctx):
+    commit_output = make_git_commit_info(ctx)
+    ctx.register_source_node(commit_output, op.join("IPython", ".git_commit_info.ini"))

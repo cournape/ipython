@@ -1,11 +1,7 @@
-#!/usr/bin/env python
-"""This calls the setup routine for Python 2 or 3 as required."""
+# setuptools should be first so that bento.distutils knows what to monkey patch
+import setuptools
+import bento.distutils
+bento.distutils.monkey_patch()
 
-import sys
-
-if sys.version_info[0] >= 3:
-    from setup3 import main
-else:
-    from setup2 import main
-
-main()
+if __name__ == '__main__':
+    setuptools.setup()

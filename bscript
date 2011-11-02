@@ -13,6 +13,38 @@ else:
 
 from bento.commands import hooks
 
+def check_for_dependencies():
+    """Check for IPython's dependencies.
+
+    This function should NOT be called if running under setuptools!
+    """
+    from setupext.setupext import (
+        print_line, print_raw, print_status,
+        check_for_sphinx, check_for_pygments,
+        check_for_nose, check_for_pexpect,
+        check_for_pyzmq, check_for_readline
+    )
+    print_line()
+    print_raw("BUILDING IPYTHON")
+    print_status('python', sys.version)
+    print_status('platform', sys.platform)
+    if sys.platform == 'win32':
+        print_status('Windows version', sys.getwindowsversion())
+
+    print_raw("")
+    print_raw("OPTIONAL DEPENDENCIES")
+
+    check_for_sphinx()
+    check_for_pygments()
+    check_for_nose()
+    check_for_pexpect()
+    check_for_pyzmq()
+    check_for_readline()
+
+@hooks.post_configure
+def post_configure(conf):
+    check_for_dependencies()
+
 def set_revision(template):
     proc = subprocess.Popen('git rev-parse --short HEAD',
                             stdout=subprocess.PIPE,
